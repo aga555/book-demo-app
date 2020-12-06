@@ -12,13 +12,16 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(BookController.class)
@@ -55,4 +58,84 @@ class BookControllerTest {
         //then
         assertThat(argumentCaptor.getValue().getAuthor(), is("Aga"));
     }
+
+    @Test
+    public void allBooksShouldReturnTwoBooks() throws Exception {
+        //given
+
+        Book book1;
+        Book book2;
+        book1 = createBook(1L, "Java", "aga", "111");
+        book2 = createBook(2L, "Java8", "baba", "11www1");
+        List<Book> bookList = new ArrayList<>();
+        bookList.add(book1);
+        bookList.add(book2);
+
+        when(bookService.getAllBooks()).thenReturn(bookList);
+
+
+        this.mockMvc
+                .perform(get("/api/books"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].title", is("Java")))
+                .andExpect(jsonPath("$[0].author", is("aga")))
+                .andExpect(jsonPath("$[1].id", is(2)))
+                .andExpect(jsonPath("$[1].title", is("Java8")))
+                .andExpect(jsonPath("$[1].author", is("baba")))
+                .andExpect(jsonPath("$[1].id", is(2)));
+
+    }
+
+    @Test
+    public void WithIdOneShouldReturnBook() throws Exception {
+
+        Book book;
+        book = createBook(1L, "Java", "aga", "111");
+
+        when(bookService.getBookById(1L)).thenReturn(book);
+
+
+        this.mockMvc
+                .perform(get("/api/books/1"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("application/json"))
+
+                .andExpect(jsonPath("$.title", is("Java")))
+                .andExpect(jsonPath("$.author", is("aga")))
+                .andExpect(jsonPath("$.id", is(1)));
+
+    }
+
+    @Test
+    void getBookWithUnknownIdShouldReturn404() throws Exception {
+        when(bookService.getBookById(42L)).thenThrow(new BookNotFoundException("not found book by id"));
+
+        this.mockMvc
+                .perform(get("/api/books/42"))
+                .andExpect(status().isNotFound());
+    }
+
+    private Book createBook(long id, String title, String author, String isbn) {
+        Book book = new Book();
+        book.setTitle(title);
+        book.setIsbn(isbn);
+        book.setAuthor(author);
+        book.setId(id);
+        return book;
+
+    }
+
+    private List<Book> prepareBookList() {
+        Book book1;
+        Book book2;
+        book1 = createBook(1L, "Java", "aga", "111");
+        book2 = createBook(2L, "Java8", "baba", "11www1");
+        List<Book> bookList = new ArrayList<>();
+        bookList.add(book1);
+        bookList.add(book2);
+        return bookList;
+    }
+
 }

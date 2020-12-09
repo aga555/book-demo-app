@@ -2,8 +2,11 @@ package com.example.book.app;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class ReviewVerifierTest {
 
@@ -18,7 +21,7 @@ class ReviewVerifierTest {
     void shouldFailWhenReviewContainsSwearWord() {
         String review = "This book is shit ";
         boolean result = reviewVerifier.doesMeetQualityStandards(review);
-        Assertions.assertFalse(result,"ReviewVerifier did not detected swear word ");
+        assertFalse(result, "ReviewVerifier did not detected swear word ");
 
     }
 
@@ -33,10 +36,14 @@ class ReviewVerifierTest {
     void shouldFaildWhenReviewContainsLoremIpsum() {
         String review = "lorem ipsum  lorem ipsum lorem ipsum lorem ipsum ";
         boolean result = reviewVerifier.doesMeetQualityStandards(review);
-        Assertions.assertFalse(result);
+        assertFalse(result);
+    }
 
-        //given
-        //when
-        //then
+    @ParameterizedTest
+    @CsvFileSource(resources = "/badReview.csv")
+    void shouldFailedWhenReviewIsBadQuality(String review) {
+        boolean result = reviewVerifier.doesMeetQualityStandards(review);
+        assertFalse(result, "ReviewVerifier did not detected bad review");
+
     }
 }

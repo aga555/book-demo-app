@@ -9,6 +9,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @ExtendWith(RandomReviewParameterResolverExtension.class)
 class ReviewVerifierTest {
 
@@ -48,13 +50,19 @@ class ReviewVerifierTest {
         assertFalse(result, "ReviewVerifier did not detected bad review");
     }
 
-    @Test
+
     @RepeatedTest(5)
     void shouldFailWhenRandomQualityIsBad(@RandomReviewParameterResolverExtension.RandomReview String review) {
         System.out.println(review);
         boolean result = reviewVerifier.doesMeetQualityStandards(review);
         System.out.print(result);
         assertFalse(result, "ReviewVerifier did not detected  random bad review");
+    }
 
+    @Test
+    void shouldPassWhenReviewIsGood() {
+        String review="Yaa Gyasi. Five Days. by Wes Moore and Erica L. Mexican Gothic. by Silvia Moreno-Garcia. Eat a Peach. by David Chang and Gabe Ulla. The Searcher. by Tana French. Hidden Valley Road. by Robert Kolker.";
+        boolean result = reviewVerifier.doesMeetQualityStandards(review);
+        assertTrue(result,"ReviewVerifier detected  random bad review");
     }
 }

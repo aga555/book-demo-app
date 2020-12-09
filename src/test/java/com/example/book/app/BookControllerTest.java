@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(BookController.class)
+@WebMvcTest()
 class BookControllerTest {
 
     @Autowired
@@ -161,6 +161,8 @@ class BookControllerTest {
 
     }
 
+
+
     private Book createBook(long id, String title, String author, String isbn) {
         Book book = new Book();
         book.setTitle(title);
@@ -170,6 +172,7 @@ class BookControllerTest {
         return book;
 
     }
+
 
 
 }

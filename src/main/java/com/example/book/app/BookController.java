@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -26,11 +27,17 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity <List<Book>> getAlBooks(){
+    public ResponseEntity<List<Book>> getAlBooks() {
         return ResponseEntity.ok(bookService.getAllBooks());
     }
+
     @GetMapping("/{id}")
-   public ResponseEntity<Book> getBookById(@PathVariable("id") Long id){
+    public ResponseEntity<Book> getBookById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(bookService.getBookById(id));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Book> updateBook(@PathVariable("id") Long id, @RequestBody BookRequest bookRequest) {
+        return ResponseEntity.ok(bookService.updateBook(id, bookRequest));
     }
 }

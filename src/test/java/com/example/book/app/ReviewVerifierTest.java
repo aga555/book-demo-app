@@ -2,12 +2,14 @@ package com.example.book.app;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
-
+@ExtendWith(RandomReviewParameterResolverExtension.class)
 class ReviewVerifierTest {
 
     private ReviewVerifier reviewVerifier;
@@ -44,6 +46,15 @@ class ReviewVerifierTest {
     void shouldFailedWhenReviewIsBadQuality(String review) {
         boolean result = reviewVerifier.doesMeetQualityStandards(review);
         assertFalse(result, "ReviewVerifier did not detected bad review");
+    }
+
+    @Test
+    @RepeatedTest(5)
+    void shouldFailWhenRandomQualityIsBad(@RandomReviewParameterResolverExtension.RandomReview String review) {
+        System.out.println(review);
+        boolean result = reviewVerifier.doesMeetQualityStandards(review);
+        System.out.print(result);
+        assertFalse(result, "ReviewVerifier did not detected  random bad review");
 
     }
 }

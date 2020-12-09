@@ -52,7 +52,8 @@ class ReviewVerifierTest {
 
 
     @RepeatedTest(5)
-    void shouldFailWhenRandomQualityIsBad(@RandomReviewParameterResolverExtension.RandomReview String review) {
+    void shouldFailWhenRandomQualityIsBad(@RandomReviewParameterResolverExtension.RandomReview String review) throws InterruptedException {
+        Thread.sleep(1000);
         System.out.println(review);
         boolean result = reviewVerifier.doesMeetQualityStandards(review);
         System.out.print(result);
@@ -60,7 +61,8 @@ class ReviewVerifierTest {
     }
 
     @Test
-    void shouldPassWhenReviewIsGood() {
+    void shouldPassWhenReviewIsGood() throws InterruptedException {
+        Thread.sleep(1000);
         String review="Yaa Gyasi. Five Days. by Wes Moore and Erica L. Mexican Gothic. by Silvia Moreno-Garcia. Eat a Peach. by David Chang and Gabe Ulla. The Searcher. by Tana French. Hidden Valley Road. by Robert Kolker.";
         boolean result = reviewVerifier.doesMeetQualityStandards(review);
         assertTrue(result,"ReviewVerifier detected  random bad review");
